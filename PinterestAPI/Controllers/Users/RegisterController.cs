@@ -18,6 +18,7 @@ namespace PinterestAPI.Controllers.Users
             _context = context;
         }
 
+
         // POST: api/Register
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
@@ -52,7 +53,8 @@ namespace PinterestAPI.Controllers.Users
                     UserName = newUsername[0],
                     UserId = insertedUserId,
                     Birthday = newBirthday,
-                    Email = newMail
+                    Email = newMail,
+                    Privacy = false
                 };
 
                 _context.Profiles.Add(newProfile);

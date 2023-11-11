@@ -21,6 +21,8 @@ public partial class PinterestContext : DbContext
 
     public virtual DbSet<Comment> Comments { get; set; }
 
+    public virtual DbSet<FollowBoard> FollowBoards { get; set; }
+
     public virtual DbSet<Follower> Followers { get; set; }
 
     public virtual DbSet<Pin> Pins { get; set; }
@@ -84,6 +86,19 @@ public partial class PinterestContext : DbContext
                 .HasForeignKey(d => d.PinId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Comments_Pins");
+        });
+
+        modelBuilder.Entity<FollowBoard>(entity =>
+        {
+            entity.HasOne(d => d.Board).WithMany(p => p.FollowBoards)
+                .HasForeignKey(d => d.BoardId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FollowBoards_Boards");
+
+            entity.HasOne(d => d.User).WithMany(p => p.FollowBoards)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_FollowBoards_Users");
         });
 
         modelBuilder.Entity<Follower>(entity =>

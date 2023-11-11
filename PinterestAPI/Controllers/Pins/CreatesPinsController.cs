@@ -49,7 +49,7 @@ namespace PinterestAPI.Controllers.Pins
 
             var localDateTime = DateTime.Now;  // obtiene la hora local actual
             var fechaLegible = localDateTime.ToString("dd/MM/yyyy");  // Formatea la fecha como "día/mes/año"
-            //var utcDateTime = localDateTime.ToUniversalTime();  // convierte la hora local a UTC
+            var utcDateTime = localDateTime.ToUniversalTime();  // convierte la hora local a UTC
             if (ModelState.IsValid)
             {
                 var imageBytes = await ObtenerBytesImagen(pinDto.Image);                
@@ -72,7 +72,7 @@ namespace PinterestAPI.Controllers.Pins
                     AltText = pinDto.AltText,
                     Link = pinDto.Link,
                     UserId = pinDto.UserId,
-                    Date = localDateTime,
+                    Date = utcDateTime,
                     SensitiveContent = pinDto.SensitiveContent
                 };
 

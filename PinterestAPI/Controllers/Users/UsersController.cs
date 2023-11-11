@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PinterestAPI.Controllers.Users
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase

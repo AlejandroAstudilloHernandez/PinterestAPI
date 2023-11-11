@@ -21,6 +21,8 @@ public partial class User
 
     public virtual ICollection<Board> Boards { get; set; } = new List<Board>();
 
+    public virtual ICollection<FollowBoard> FollowBoards { get; set; } = new List<FollowBoard>();
+
     public virtual ICollection<Follower> FollowerUserFollowers { get; set; } = new List<Follower>();
 
     public virtual ICollection<Follower> FollowerUserFollowings { get; set; } = new List<Follower>();

@@ -25,5 +25,7 @@ public partial class Profile
 
     public byte[]? ProfilePhoto { get; set; }
 
+    public bool? Privacy { get; set; }
+
     public virtual User User { get; set; } = null!;
 }

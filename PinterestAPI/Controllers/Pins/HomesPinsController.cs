@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
+using System.Buffers.Text;
 
 namespace PinterestAPI.Controllers.Pins
 {
-    [Authorize]
+    
     [Route("api/[controller]")]
     [ApiController]
     public class HomesPinsController : ControllerBase
@@ -17,15 +18,29 @@ namespace PinterestAPI.Controllers.Pins
             _context = context;
         }
 
-        //Pins para feed de inicio probicional
+        public class PinImageDto
+        {
+            public int PinId { get; set; }
+            public byte[] Image { get; set; }
+        }
+
+        // ...
+
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Pin>>> GetPins()
+        public async Task<ActionResult<IEnumerable<PinImageDto>>> GetPinImages()
         {
             var random = new Random();
-            var pins = await _context.Pins
+
+            // Obtén PinId e Image de los Pins y convierte Image a Base64
+            var pinImages = await _context.Pins
+                .Select(pin => new PinImageDto
+                {
+                    PinId = pin.PinId,
+                    Image = pin.Image
+                })
                 .ToListAsync();
 
-            return pins;
-        }        
+            return pinImages;
+        }
     }
 }

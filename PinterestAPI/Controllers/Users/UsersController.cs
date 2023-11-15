@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace PinterestAPI.Controllers.Users
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class UsersController : ControllerBase
@@ -75,24 +75,50 @@ namespace PinterestAPI.Controllers.Users
         }
 
         // DELETE: api/Users/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete("{userId}")]
+        public async Task<IActionResult> DeleteUserAndAssociatedData(int userId)
         {
-            if (_context.Users == null)
-            {
-                return NotFound();
-            }
-            var user = await _context.Users.FindAsync(id);
+            // Busca el usuario por Id incluyendo las colecciones relacionadas
+            var user = await _context.Users
+                .Include(u => u.Boards)
+                .Include(u => u.FollowBoards)
+                .Include(u => u.FollowerUserFollowers)
+                .Include(u => u.FollowerUserFollowings)
+                .Include(u => u.Pins)
+                .Include(u => u.Profiles)
+                .Include(u => u.Saveds)
+                .Include(u => u.Comments)
+                .Include(u => u.Replies)
+                .Include(u => u.PinBoardAssociations)
+                .FirstOrDefaultAsync(u => u.UserId == userId);
+
             if (user == null)
             {
-                return NotFound();
+                return NotFound("Usuario no encontrado.");
             }
 
+            // Elimina los datos asociados al usuario
+
+            _context.RemoveRange(user.Replies);
+            _context.RemoveRange(user.Comments);
+            _context.RemoveRange(user.Saveds);
+            _context.RemoveRange(user.Boards);
+            _context.RemoveRange(user.Pins);
+            _context.RemoveRange(user.PinBoardAssociations);
+            _context.RemoveRange(user.FollowBoards);            
+            _context.RemoveRange(user.FollowerUserFollowers);
+            _context.RemoveRange(user.FollowerUserFollowings);
+            _context.RemoveRange(user.Profiles);
+
+            // Elimina el usuario
             _context.Users.Remove(user);
+
             await _context.SaveChangesAsync();
 
-            return NoContent();
+            return Ok("Usuario y datos asociados eliminados correctamente.");
         }
+
+
 
         #region Metodos
         private bool UserExists(int id)

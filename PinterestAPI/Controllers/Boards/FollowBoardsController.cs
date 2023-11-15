@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PinterestAPI.Models;
+using static PinterestAPI.Controllers.Users.FollowUsersController;
 
 namespace PinterestAPI.Controllers.Boards
 {
@@ -46,6 +47,34 @@ namespace PinterestAPI.Controllers.Boards
                 };
 
                 _context.FollowBoards.Add(followboard);
+                await _context.SaveChangesAsync();
+
+                return Ok("Board seguido con éxito");
+            }
+
+            return BadRequest(ModelState);
+        }
+
+
+        [HttpDelete("unfollow")]
+        public async Task<IActionResult> DeleteUnfollow(FollowDto followDto)
+        {
+
+            if (ModelState.IsValid)
+            {
+
+                var usuario = await _context.Users.FindAsync(followDto.UserId);
+                if (usuario == null)
+                {
+                    return BadRequest("El UsuarioId especificado no existe.");
+                }
+                var board = await _context.Boards.FindAsync(followDto.BoardId);
+                if (board == null)
+                {
+                    return BadRequest("El Board especificado no existe.");
+                }
+                var registroAEliminar = _context.FollowBoards.FirstOrDefault(e => e.UserId == followDto.UserId && e.BoardId == followDto.BoardId);
+                _context.FollowBoards.Remove(registroAEliminar);
                 await _context.SaveChangesAsync();
 
                 return Ok("Board seguido con éxito");

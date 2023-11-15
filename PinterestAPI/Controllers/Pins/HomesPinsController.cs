@@ -7,7 +7,7 @@ using System.Buffers.Text;
 
 namespace PinterestAPI.Controllers.Pins
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class HomesPinsController : ControllerBase
@@ -29,7 +29,6 @@ namespace PinterestAPI.Controllers.Pins
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PinImageDto>>> GetPinImages()
         {
-            var random = new Random();
 
             // Obtén PinId e Image de los Pins y convierte Image a Base64
             var pinImages = await _context.Pins

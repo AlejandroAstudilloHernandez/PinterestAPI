@@ -21,15 +21,21 @@ public partial class User
 
     public virtual ICollection<Board> Boards { get; set; } = new List<Board>();
 
+    public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
     public virtual ICollection<FollowBoard> FollowBoards { get; set; } = new List<FollowBoard>();
 
     public virtual ICollection<Follower> FollowerUserFollowers { get; set; } = new List<Follower>();
 
     public virtual ICollection<Follower> FollowerUserFollowings { get; set; } = new List<Follower>();
 
+    public virtual ICollection<PinBoardAssociation> PinBoardAssociations { get; set; } = new List<PinBoardAssociation>();
+
     public virtual ICollection<Pin> Pins { get; set; } = new List<Pin>();
 
     public virtual ICollection<Profile> Profiles { get; set; } = new List<Profile>();
+
+    public virtual ICollection<Reply> Replies { get; set; } = new List<Reply>();
 
     public virtual ICollection<Saved> Saveds { get; set; } = new List<Saved>();
 }
@@ -38,7 +44,7 @@ public class Encrypt
 {
     public static string GetSHA256(string str)
     {
-        SHA256 sha256 = SHA256Managed.Create();
+        SHA256 sha256 = SHA256.Create();
         ASCIIEncoding encoding = new ASCIIEncoding();
         byte[] stream = null;
         StringBuilder sb = new StringBuilder();

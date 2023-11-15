@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using PinterestAPI.Models;
 using static PinterestAPI.Controllers.Pins.SavePinsController;
 
@@ -18,6 +19,7 @@ namespace PinterestAPI.Controllers.Pins
 
         public class CommentPinDto
         {
+            public int UserId { get; set; }
             public string Comment { get; set; }
             public int PinId { get; set; }
         }
@@ -30,12 +32,18 @@ namespace PinterestAPI.Controllers.Pins
             {
                 return BadRequest();
             }
+            var user = await _context.Users.FindAsync(commentPinDto.UserId);
+            if (user == null)
+            {
+                return BadRequest("El usuario no existe.");
+            }
 
             // Crea una nueva instancia de la entidad Comment a partir de los datos en commentPinDto.
             var commentPin = new Comment
             {
                 Comment1 = commentPinDto.Comment,
-                PinId = commentPinDto.PinId
+                PinId = commentPinDto.PinId,
+                UserId = commentPinDto.UserId
             };
 
             // Agrega el comentario recién creado al contexto de Entity Framework.

@@ -47,7 +47,7 @@ public partial class PinterestContext : DbContext
     {
         modelBuilder.Entity<Block>(entity =>
         {
-            entity.HasKey(e => e.BlockId).HasName("PK__Blocks__144215F1A00BAE42");
+            entity.HasKey(e => e.BlockId).HasName("PK__Blocks__144215F1FFE3CAC2");
 
             entity.Property(e => e.BlockDate).HasColumnType("datetime");
 
@@ -86,6 +86,11 @@ public partial class PinterestContext : DbContext
                 .HasForeignKey(d => d.PinId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Comments_Pins");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Comments)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Comments_Users");
         });
 
         modelBuilder.Entity<FollowBoard>(entity =>
@@ -103,7 +108,7 @@ public partial class PinterestContext : DbContext
 
         modelBuilder.Entity<Follower>(entity =>
         {
-            entity.HasKey(e => e.FollowerId).HasName("PK__Follower__E859401977B56088");
+            entity.HasKey(e => e.FollowerId).HasName("PK__Follower__E85940194EF6D1EA");
 
             entity.HasOne(d => d.UserFollower).WithMany(p => p.FollowerUserFollowers)
                 .HasForeignKey(d => d.UserFollowerId)
@@ -156,6 +161,10 @@ public partial class PinterestContext : DbContext
                 .HasForeignKey(d => d.PinId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_PinBoardAssociation_Pins");
+
+            entity.HasOne(d => d.User).WithMany(p => p.PinBoardAssociations)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Users_UserId");
         });
 
         modelBuilder.Entity<Profile>(entity =>
@@ -207,6 +216,11 @@ public partial class PinterestContext : DbContext
                 .HasForeignKey(d => d.CommentId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Replies_Comments");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Replies)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Replies_Users");
         });
 
         modelBuilder.Entity<Saved>(entity =>

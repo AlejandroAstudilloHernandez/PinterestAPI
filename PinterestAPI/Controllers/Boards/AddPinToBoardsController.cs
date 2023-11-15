@@ -37,7 +37,7 @@ namespace PinterestAPI.Controllers.Boards
                 var board = await _context.Boards.FindAsync(addPinDto.BoardId);
                 if (board == null)
                 {
-                    return BadRequest("El usuario que desea seguir no existe.");
+                    return BadRequest("El board no existe.");
                 }
 
                 var addPin = new PinBoardAssociation

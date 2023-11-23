@@ -55,7 +55,6 @@ namespace PinterestAPI.Controllers.Profiles
                     Information = profile.Information,
                     WebSite = profile.WebSite,
                     UserName = profile.UserName,
-                    UserId = profile.UserId,
                     Birthday = profile.Birthday,
                     Email = profile.Email,
                     ProfilePhoto = profile.ProfilePhoto,

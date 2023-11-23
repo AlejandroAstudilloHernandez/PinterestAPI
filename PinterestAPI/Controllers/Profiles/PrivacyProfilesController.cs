@@ -18,9 +18,9 @@ namespace PinterestAPI.Controllers.Profiles
         }
 
         [HttpPut("id")]
-        public async Task<IActionResult> PutPrivacyProfileByUserId(int id, bool privacy)
+        public async Task<IActionResult> PutPrivacyProfileByUserId(int userId, bool privacy)
         {
-            var usuario = await _context.Users.FindAsync(id);
+            var usuario = await _context.Users.FindAsync(userId);
             if (usuario == null)
             {
                 return BadRequest("El UsuarioId especificado no existe.");

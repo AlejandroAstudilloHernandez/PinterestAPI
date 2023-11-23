@@ -5,7 +5,6 @@ using PinterestAPI.Models;
 
 namespace PinterestAPI.Controllers.Pins
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CreatesPinsController : ControllerBase

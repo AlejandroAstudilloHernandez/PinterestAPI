@@ -44,7 +44,7 @@ namespace PinterestAPI.Controllers.Users
 
                 // Obtiene el UserName y Birthday del usuario recién insertado
                 string[] newUsername = user.Email.Split("@");
-                var newMail = "Usuario" + insertedUserId;
+                var newMail = user.Email;
                 var newBirthday = user.Birthday; // Asegúrate de que la propiedad Birthday esté configurada correctamente en tu modelo
 
                 // Crea un nuevo perfil y agrégalo a la tabla "Profiles"

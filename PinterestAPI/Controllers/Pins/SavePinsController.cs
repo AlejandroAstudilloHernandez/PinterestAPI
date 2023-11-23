@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
 using static PinterestAPI.Controllers.Pins.CreatesPinsController;
 
@@ -40,5 +41,49 @@ namespace PinterestAPI.Controllers.Pins
 
             return Ok();
         }
+
+
+        public class PinImageDto
+        {
+            public int PinId { get; set; }
+            public byte[] Image { get; set; }
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<IEnumerable<PinDto>>> GetPinsInSaveds(int userId)
+        {
+            var saveds = await _context.Saveds
+                .Where(pa => pa.UserId == userId)
+                .ToListAsync();
+
+            if (saveds.Count == 0)
+            {
+                return NotFound("No hay pines guardados.");
+            }
+
+            var pinIds = saveds.Select(pa => pa.PinId).ToList();
+
+            var pinsInSaveds = await _context.Pins
+                .Where(pin => pinIds.Contains(pin.PinId))
+                .ToListAsync();
+
+            if (pinsInSaveds.Count == 0)
+            {
+                return NotFound("No hay pines guardados.");
+            }
+
+            // Puedes mapear los pines a un DTO si es necesario
+            var pinImages = pinsInSaveds
+                .Select(pin => new PinImageDto
+                {
+                    PinId = pin.PinId,
+                    Image = pin.Image
+                })
+                .ToList();
+
+            return Ok(pinImages);
+        }
+
+
     }
 }

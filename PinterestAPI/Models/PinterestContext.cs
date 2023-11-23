@@ -41,13 +41,13 @@ public partial class PinterestContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=DESKTOP-AOHL8UE\\SQLEXPRESS;Database=Pinterest;Trusted_Connection=True;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer("Server=localhost,14033;Database=Pinterest;User Id=sa;Password=3SPeciaL%44;Encrypt=False;");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Block>(entity =>
         {
-            entity.HasKey(e => e.BlockId).HasName("PK__Blocks__144215F1FFE3CAC2");
+            entity.HasKey(e => e.BlockId).HasName("PK__Blocks__144215F1E431D202");
 
             entity.Property(e => e.BlockDate).HasColumnType("datetime");
 
@@ -108,7 +108,7 @@ public partial class PinterestContext : DbContext
 
         modelBuilder.Entity<Follower>(entity =>
         {
-            entity.HasKey(e => e.FollowerId).HasName("PK__Follower__E85940194EF6D1EA");
+            entity.HasKey(e => e.FollowerId).HasName("PK__Follower__E85940195E991B76");
 
             entity.HasOne(d => d.UserFollower).WithMany(p => p.FollowerUserFollowers)
                 .HasForeignKey(d => d.UserFollowerId)
@@ -164,7 +164,7 @@ public partial class PinterestContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.PinBoardAssociations)
                 .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_Users_UserId");
+                .HasConstraintName("FK_UserId");
         });
 
         modelBuilder.Entity<Profile>(entity =>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
@@ -8,6 +9,7 @@ namespace PinterestAPI.Controllers.Pins
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SavePinsController : ControllerBase
     {
         private readonly PinterestContext _context;
@@ -27,14 +29,26 @@ namespace PinterestAPI.Controllers.Pins
         [HttpPost("save")]
         public async Task<IActionResult> PostSave(SavePinDto savePinDto)
         {
-            
-            if (savePinDto == null) {  return BadRequest(); }
+            if (savePinDto == null)
+            {
+                return BadRequest();
+            }
+
+            // Verificar si ya existe la combinación de PinId y UserId
+            var existingSave = _context.Saveds
+                .FirstOrDefault(s => s.UserId == savePinDto.UserId && s.PinId == savePinDto.PinId);
+
+            if (existingSave != null)
+            {
+                // Ya existe la combinación, puedes devolver un código de estado conflict
+                return Conflict("Este pin ya esta guardado.");
+            }
 
             var savePin = new Saved
             {
                 UserId = savePinDto.UserId,
                 PinId = savePinDto.PinId
-            };            
+            };
 
             _context.Saveds.Add(savePin);
             await _context.SaveChangesAsync();

@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PinterestAPI.Controllers.Profiles
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProfilesController : ControllerBase
     {
         private readonly PinterestContext _context;
@@ -31,6 +33,13 @@ namespace PinterestAPI.Controllers.Profiles
             public string Email { get; set; }
             public byte[] ProfilePhoto { get; set; }
             public bool? Privacy { get; set; }
+        }
+
+        public class MiniProfileDto
+        {            
+            public string UserName { get; set; }
+            public string Email { get; set; }
+            public byte[] ProfilePhoto { get; set; }
         }
 
 
@@ -59,6 +68,36 @@ namespace PinterestAPI.Controllers.Profiles
                     Email = profile.Email,
                     ProfilePhoto = profile.ProfilePhoto,
                     Privacy = profile.Privacy,
+                };
+
+                return Ok(profileDto);
+            }
+            else
+            {
+                return NotFound("No se encontró un perfil para el UsuarioId especificado.");
+            }
+        }
+
+
+
+        [HttpGet("miniProfile/{id}")]
+        public async Task<IActionResult> GetMiniProfileByUserId(int id)
+        {
+            var usuario = await _context.Users.FindAsync(id);
+            if (usuario == null)
+            {
+                return BadRequest("El UsuarioId especificado no existe.");
+            }
+
+            var profile = await _context.Profiles.FirstOrDefaultAsync(p => p.UserId == usuario.UserId);
+
+            if (profile != null)
+            {
+                var profileDto = new MiniProfileDto
+                {                    
+                    UserName = profile.UserName,
+                    Email = profile.Email,
+                    ProfilePhoto = profile.ProfilePhoto
                 };
 
                 return Ok(profileDto);

@@ -10,6 +10,7 @@ namespace PinterestAPI.Controllers.Pins
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class HomesPinsController : ControllerBase
     {        
         private readonly PinterestContext _context;

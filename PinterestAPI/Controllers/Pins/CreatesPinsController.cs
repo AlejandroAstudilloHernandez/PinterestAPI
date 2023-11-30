@@ -1,12 +1,17 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 
 namespace PinterestAPI.Controllers.Pins
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class CreatesPinsController : ControllerBase
     {
         private readonly PinterestContext _context;
@@ -34,6 +39,12 @@ namespace PinterestAPI.Controllers.Pins
             public bool? SensitiveContent { get; set; }
         }
 
+        public class PinImageDto
+        {
+            public int PinId { get; set; }
+            public byte[] Image { get; set; }
+        }
+
         //Metodo para convertir la imagen
         private async Task<byte[]> ObtenerBytesImagen(IFormFile archivoImagen)
         {
@@ -42,23 +53,25 @@ namespace PinterestAPI.Controllers.Pins
             return ms.ToArray();
         }
 
+        
         [HttpPost("create")]
         public async Task<IActionResult> PostCreate([FromForm] PinDto pinDto)
         {
+            var localDateTime = DateTime.Now;
+            var fechaLegible = localDateTime.ToString("dd/MM/yyyy");
+            var utcDateTime = localDateTime.ToUniversalTime();
 
-            var localDateTime = DateTime.Now;  // obtiene la hora local actual
-            var fechaLegible = localDateTime.ToString("dd/MM/yyyy");  // Formatea la fecha como "día/mes/año"
-            var utcDateTime = localDateTime.ToUniversalTime();  // convierte la hora local a UTC
             if (ModelState.IsValid)
             {
-                var imageBytes = await ObtenerBytesImagen(pinDto.Image);                
+                var imageBytes = await ComprimirImagen(pinDto.Image);
 
                 var usuario = await _context.Users.FindAsync(pinDto.UserId);
                 if (usuario == null)
                 {
                     return BadRequest("El UsuarioId especificado no existe.");
                 }
-                if(pinDto.SensitiveContent == null)
+
+                if (pinDto.SensitiveContent == null)
                 {
                     pinDto.SensitiveContent = false;
                 }
@@ -94,6 +107,66 @@ namespace PinterestAPI.Controllers.Pins
             }
 
             return BadRequest(ModelState);
+        }
+
+        private async Task<byte[]> ComprimirImagen(IFormFile archivoImagen)
+        {
+            using var ms = new MemoryStream();
+            await archivoImagen.CopyToAsync(ms);
+
+            // Cargar la imagen utilizando ImageSharp
+            using var imagen = Image.Load(ms.ToArray());
+
+            // Redimensionar la imagen si es necesario
+            imagen.Mutate(x => x.Resize(new ResizeOptions
+            {
+                Size = new Size(800, 600), // Ajusta según tus requisitos de tamaño
+                Mode = ResizeMode.Max
+            }));
+
+            // Comprimir la imagen con calidad específica
+            imagen.Save(ms, new JpegEncoder
+            {
+                Quality = 80 // Ajusta la calidad de compresión
+            });
+
+            return ms.ToArray();
+        }
+
+
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<IEnumerable<PinDto>>> GetUserPins(int userId)
+        {
+            var saveds = await _context.Pins
+                .Where(pa => pa.UserId == userId)
+                .ToListAsync();
+
+            if (saveds.Count == 0)
+            {
+                return NotFound("No hay pines guardados.");
+            }
+
+            var pinIds = saveds.Select(pa => pa.PinId).ToList();
+
+            var pinsInSaveds = await _context.Pins
+                .Where(pin => pinIds.Contains(pin.PinId))
+                .ToListAsync();
+
+            if (pinsInSaveds.Count == 0)
+            {
+                return NotFound("No hay pines guardados.");
+            }
+
+            // Puedes mapear los pines a un DTO si es necesario
+            var pinImages = pinsInSaveds
+                .Select(pin => new PinImageDto
+                {
+                    PinId = pin.PinId,
+                    Image = pin.Image
+                })
+                .ToList();
+
+            return Ok(pinImages);
         }
 
 

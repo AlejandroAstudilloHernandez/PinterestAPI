@@ -52,7 +52,12 @@ namespace PinterestAPI.Controllers.Users
             var jwtToken = GenerateToken(user);
 
             // Devuelve el token como respuesta
-            return Ok(new { Token = jwtToken});
+            var response = new
+            {
+                Token = jwtToken,
+                userId = user.UserId
+            };
+            return Ok(response);
         }
 
 

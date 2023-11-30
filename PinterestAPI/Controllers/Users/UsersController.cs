@@ -19,6 +19,7 @@ namespace PinterestAPI.Controllers.Users
 
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
 

@@ -5,7 +5,9 @@ using PinterestAPI.Models;
 
 namespace PinterestAPI.Controllers.Pins
 {
-    [Route("api/[controller]")]    
+    [Route("api/[controller]")]
+    [ApiController]
+    [Authorize]
     public class SinglePinsController : ControllerBase
     {
         private readonly PinterestContext _context;

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PinterestAPI.Models;
 
@@ -6,6 +7,7 @@ namespace PinterestAPI.Controllers.Boards
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class DeleteBoardsController : ControllerBase
     {
         private readonly PinterestContext _context;

@@ -1,0 +1,37 @@
+version: '3.4'
+
+networks:
+  mynetwork:
+    driver: bridge
+
+services:
+  mssql:
+    hostname: mssql
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "3SPeciaL%44"
+      MSSQL_PID: Express
+    ports:
+      - "14033:1433"
+    volumes:
+      - c:/sql/data:/var/opt/mssql/data
+      - c:/sql/log:/var/opt/mssql/log
+      - c:/sql/log:/var/opt/mssql/secrets
+    networks:
+      - mynetwork
+
+  pinterestapi:
+    hostname: api
+    image: ${DOCKER_REGISTRY-}pinterestapi
+    build:
+      context: .
+      dockerfile: PinterestAPI/Dockerfile
+    depends_on:
+      - mssql
+    ports:
+      - "4433:443"
+      - "8080:80"
+    networks:
+      - mynetwork
+

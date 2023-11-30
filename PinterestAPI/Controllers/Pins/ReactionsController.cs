@@ -4,11 +4,13 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using PinterestAPI.Models;
 using static PinterestAPI.Controllers.Pins.CreatesPinsController;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PinterestAPI.Controllers.Pins
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ReactionsController : ControllerBase
     {
         private readonly PinterestContext _context;
@@ -17,12 +19,18 @@ namespace PinterestAPI.Controllers.Pins
             _context = context;
         }
 
+        public class likesDto
+        {
+            public int pinId { get; set; }
+            public int reactionType { get; set;}
+        }
+
 
         [HttpPut("add")]
-        public async Task<IActionResult> PutAddReaction(int pinId, int reactionType)
+        public async Task<IActionResult> PutAddReaction(likesDto likes)
         {
-            var pin = await _context.Pins.FindAsync(pinId);
-            var reaction = _context.Reactions.FirstOrDefault(r => r.PinId == pinId);
+            var pin = await _context.Pins.FindAsync(likes.pinId);
+            var reaction = _context.Reactions.FirstOrDefault(r => r.PinId == likes.pinId);
 
             if (pin == null)
             {
@@ -32,14 +40,14 @@ namespace PinterestAPI.Controllers.Pins
             {
                 return NotFound();
             }
-            if (reactionType > 4 || reactionType < 0)
+            if (likes.reactionType > 4 || likes.reactionType < 0)
             {
                 return BadRequest("Reaccion invalida.");
             }
 
             try
             {
-                switch (reactionType)
+                switch (likes.reactionType)
                 {
                     case 0:
                         reaction.GoodIdeaReaction++;
@@ -55,11 +63,11 @@ namespace PinterestAPI.Controllers.Pins
                 }
                 await _context.SaveChangesAsync();
 
-                return Ok(pin);
+                return Ok();
             }
             catch (DbUpdateException)
             {
-                if (reactionType > 4 || reactionType < 0)
+                if (likes.reactionType > 4 || likes.reactionType < 0)
                 {
                     return BadRequest("Reaccion invalida.");
                 }
@@ -71,10 +79,10 @@ namespace PinterestAPI.Controllers.Pins
         }
 
         [HttpPut("remove")]
-        public async Task<IActionResult> PutRemoveReaction(int pinId, int reactionType)
+        public async Task<IActionResult> PutRemoveReaction(likesDto likes)
         {
-            var pin = await _context.Pins.FindAsync(pinId);
-            var reaction = _context.Reactions.FirstOrDefault(r => r.PinId == pinId);
+            var pin = await _context.Pins.FindAsync(likes.pinId);
+            var reaction = _context.Reactions.FirstOrDefault(r => r.PinId == likes.pinId);
 
             if (pin == null)
             {
@@ -84,14 +92,14 @@ namespace PinterestAPI.Controllers.Pins
             {
                 return NotFound();
             }
-            if (reactionType > 4 || reactionType < 0)
+            if (likes.reactionType > 4 || likes.reactionType < 0)
             {
                 return BadRequest("Reaccion invalida.");
             }
 
             try
             {
-                switch (reactionType)
+                switch (likes.reactionType)
                 {
                     case 0:
                         reaction.GoodIdeaReaction--;
@@ -107,11 +115,11 @@ namespace PinterestAPI.Controllers.Pins
                 }
                 await _context.SaveChangesAsync();
 
-                return Ok(pin);
+                return Ok();
             }
             catch (DbUpdateException)
             {
-                if (reactionType > 4 || reactionType < 0)
+                if (likes.reactionType > 4 || likes.reactionType < 0)
                 {
                     return BadRequest("Reaccion invalida.");
                 }
@@ -121,5 +129,26 @@ namespace PinterestAPI.Controllers.Pins
                 }
             }
         }
+
+        [HttpGet("{pinId}")]
+        public IActionResult GetReactionsForPin(int pinId)
+        {
+            // Realiza la consulta para obtener todas las reacciones que pertenecen al PinId proporcionado.
+            var loveReaction = _context.Reactions
+            .Where(r => r.PinId == pinId)
+            .Select(r => r.LoveReaction)
+            .FirstOrDefault();
+
+
+            // Si no se encuentra ninguna reacción, puedes devolver una respuesta NotFound.
+            if (loveReaction == null)
+            {
+                return NotFound();
+            }
+
+            // Mapea las reacciones a un DTO o simplemente devuelve el objeto Reaction.
+            return Ok(loveReaction);
+        }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PinterestAPI.Models;
 using static PinterestAPI.Controllers.Users.FollowUsersController;
@@ -7,6 +8,7 @@ namespace PinterestAPI.Controllers.Users
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class BlockUsersController : ControllerBase
     {
         private readonly PinterestContext _context;

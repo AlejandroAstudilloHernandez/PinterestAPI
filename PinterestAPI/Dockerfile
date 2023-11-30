@@ -1,36 +1,21 @@
-#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+#See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
 
-#Imagen de Producion
-#############################################################
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base  
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
 WORKDIR /app
 EXPOSE 80
 EXPOSE 443
 
-
-
-
-
-
-
-
-
-#Imagen Build
-###########################################################
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build  
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
-COPY ["PinterestAPI.csproj", "."]
-RUN dotnet restore "./PinterestAPI.csproj"
+COPY ["PinterestAPI/PinterestAPI.csproj", "PinterestAPI/"]
+RUN dotnet restore "PinterestAPI/PinterestAPI.csproj"
 COPY . .
-WORKDIR "/src/."
+WORKDIR "/src/PinterestAPI"
 RUN dotnet build "PinterestAPI.csproj" -c Release -o /app/build
 
-#Imagen Publish
-############################################################
 FROM build AS publish
-RUN dotnet publish "PinterestAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "PinterestAPI.csproj" -c Release -o /app/publish /p:UseAppHost=false
 
-#Mover Publish a Final
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .

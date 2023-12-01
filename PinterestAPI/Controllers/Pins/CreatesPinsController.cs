@@ -6,9 +6,11 @@ using PinterestAPI.Models;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Processing;
+using Microsoft.AspNetCore.Cors;
 
 namespace PinterestAPI.Controllers.Pins
 {
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]

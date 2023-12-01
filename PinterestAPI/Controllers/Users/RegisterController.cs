@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
 using System.Text.Json.Serialization;
 using System.Text.Json;
+using Microsoft.AspNetCore.Cors;
 
 namespace PinterestAPI.Controllers.Users
 {
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     public class RegisterController : ControllerBase
@@ -50,6 +52,7 @@ namespace PinterestAPI.Controllers.Users
                 // Crea un nuevo perfil y agrégalo a la tabla "Profiles"
                 var newProfile = new Profile
                 {
+                    Name = newUsername[0],
                     UserName = newUsername[0],
                     UserId = insertedUserId,
                     Birthday = newBirthday,

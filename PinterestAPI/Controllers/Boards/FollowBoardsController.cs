@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PinterestAPI.Models;
+using Microsoft.AspNetCore.Cors;
+
 using static PinterestAPI.Controllers.Users.FollowUsersController;
 
 namespace PinterestAPI.Controllers.Boards

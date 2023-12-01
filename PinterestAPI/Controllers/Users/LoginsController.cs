@@ -7,9 +7,11 @@ using System.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Cors;
 
 namespace PinterestAPI.Controllers.Users
 {
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     public class LoginsController : ControllerBase

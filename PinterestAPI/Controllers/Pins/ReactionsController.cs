@@ -5,9 +5,11 @@ using System.Linq;
 using PinterestAPI.Models;
 using static PinterestAPI.Controllers.Pins.CreatesPinsController;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 
 namespace PinterestAPI.Controllers.Pins
 {
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]

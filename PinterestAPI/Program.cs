@@ -12,7 +12,7 @@ var connctionString = builder.Configuration.GetConnectionString("AppSettingDbCon
 builder.Services.AddDbContext<PinterestContext>(options => options.UseSqlServer(connctionString));
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("NuevaPolitica", app =>
+    options.AddPolicy("CorsRules", app =>
     {
         app.AllowAnyOrigin()
         .AllowAnyHeader() 
@@ -47,7 +47,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 app.UseHttpsRedirection();
-app.UseCors("NuevaPolitica");
+app.UseCors("CorsRules");
 app.UseAuthentication();
 app.UseAuthorization();
 

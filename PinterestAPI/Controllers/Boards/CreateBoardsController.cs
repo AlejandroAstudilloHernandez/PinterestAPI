@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PinterestAPI.Models;
+using Microsoft.AspNetCore.Cors;
 using static PinterestAPI.Controllers.Pins.CreatesPinsController;
 
 namespace PinterestAPI.Controllers.Boards
 {
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]

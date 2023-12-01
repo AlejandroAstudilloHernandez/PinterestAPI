@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using PinterestAPI.Models;
+using Microsoft.AspNetCore.Cors;
 using static PinterestAPI.Controllers.Pins.CommentsController;
 using static PinterestAPI.Controllers.Pins.SavePinsController;
 
 namespace PinterestAPI.Controllers.Pins
 {
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]

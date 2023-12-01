@@ -4,10 +4,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PinterestAPI.Models;
 using System.Buffers.Text;
+using Microsoft.AspNetCore.Cors;
 
 namespace PinterestAPI.Controllers.Pins
 {
-
+    [EnableCors("CorsRules")]
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]

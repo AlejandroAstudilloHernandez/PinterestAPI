@@ -27,7 +27,7 @@ namespace PinterestAPI.Controllers.Profiles
         }
 
         [HttpPut("{userId}")]
-        public async Task<IActionResult> UpdateUser(int userId, [FromBody] AccountManagementsControllerDto updateUserDto)
+        public async Task<IActionResult> UpdateUser(int userId, [FromForm] AccountManagementsControllerDto updateUserDto)
         {
             // Busca el usuario por Id
             var user = await _context.Users.FindAsync(userId);
